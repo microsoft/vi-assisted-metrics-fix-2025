@@ -1,6 +1,6 @@
 # Microsoft 365 Copilot Viva Insights Assisted Metrics Fix Toolkit
 
-Restore accurate Microsoft 365 Copilot assisted and meeting-hours metrics in Viva Insights exports with an automated Python/PowerShell toolkit that implements [Microsoft's Viva Insights assisted metrics fix (2025)](https://learn.microsoft.com/microsoft-365/admin/activity-reports/microsoft-365-copilot-assisted-metrics-fix). The tool expects your input CSV to contain **August 2025 activity** (reference window) and **September–October 2025 activity** (target window) so it can apply the official multiplier correctly.
+Restore accurate Microsoft 365 Copilot assisted and meeting-hours metrics in Viva Insights exports with an automated Python/PowerShell toolkit that implements [Microsoft's Viva Insights assisted metrics fix (2025)](https://learn.microsoft.com/en-us/viva/insights/org-team-insights/alternate-calculation-total-meeting-hours-summarized-recapped). The tool expects your input CSV to contain **August 2025 activity** (reference window) and **September–October 2025 activity** (target window) so it can apply the official multiplier correctly.
 
 ## Download
 
