@@ -2,6 +2,13 @@
 
 Restore accurate Microsoft 365 Copilot assisted and meeting-hours metrics in Viva Insights exports with an automated Python/PowerShell toolkit that implements [Microsoft's Viva Insights assisted metrics fix (2025)](https://learn.microsoft.com/microsoft-365/admin/activity-reports/microsoft-365-copilot-assisted-metrics-fix). The tool expects your input CSV to contain **August 2025 activity** (reference window) and **September–October 2025 activity** (target window) so it can apply the official multiplier correctly.
 
+## Download
+
+Get the latest release assets:
+
+- **[Fix-VivaExport.ps1](https://github.com/microsoft/vi-assisted-metrics-fix-2025/releases/download/vi-assisted-metrics-fix-2025-v1.0.0/Fix-VivaExport.ps1)** – PowerShell launcher (Windows)
+- **[fix_viva_export.py](https://github.com/microsoft/vi-assisted-metrics-fix-2025/releases/download/vi-assisted-metrics-fix-2025-v1.0.0/fix_viva_export.py)** – Python script (cross-platform)
+
 ---
 
 ## Why this exists
