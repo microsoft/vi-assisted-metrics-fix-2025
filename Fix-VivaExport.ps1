@@ -12,7 +12,7 @@ Path to the Viva Insights CSV export file.
 Optional destination path for the corrected CSV. Defaults to <input>_corrected_<timestamp>.csv in the input directory.
 
 .PARAMETER Granularity
-Aggregation mode. Accepts Weekly (default, Sunday–Saturday weeks) or Monthly.
+Aggregation mode. Accepts Weekly (default, Sunday–Saturday weeks), Monthly, or Daily.
 
 .PARAMETER SourceStart
 Reference window start date (ISO). Default: 2025-07-27.
@@ -67,7 +67,7 @@ param(
     [string]$Output,
 
     [Parameter(ParameterSetName = 'Run')]
-    [ValidateSet('weekly', 'monthly')]
+    [ValidateSet('weekly', 'monthly', 'daily')]
     [string]$Granularity = 'weekly',
 
     [Parameter(ParameterSetName = 'Run')]
@@ -125,7 +125,7 @@ Defaults:
   Hourly rate    : 72 USD (used to recompute Copilot assisted value)
 
 Options:
-  --granularity {weekly,monthly}
+    --granularity {weekly,monthly,daily}
   --source-start YYYY-MM-DD
   --source-end   YYYY-MM-DD
   --target-start YYYY-MM-DD

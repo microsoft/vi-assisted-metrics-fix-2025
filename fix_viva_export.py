@@ -16,7 +16,7 @@ Defaults:
   Hourly rate    : 72 USD (used to recompute Copilot assisted value)
 
 Options:
-  --granularity {weekly,monthly}
+    --granularity {weekly,monthly,daily}
   --source-start YYYY-MM-DD
   --source-end   YYYY-MM-DD
   --target-start YYYY-MM-DD
@@ -512,9 +512,9 @@ def _parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--granularity",
-        choices=("weekly", "monthly"),
+        choices=("weekly", "monthly", "daily"),
         default="weekly",
-        help="Aggregate by weekly (default) or monthly periods",
+        help="Aggregate by weekly (default), monthly, or daily periods",
     )
     parser.add_argument(
         "--source-start",
@@ -586,13 +586,17 @@ def _align_start(date: _dt.date, granularity: str) -> _dt.date:
     if granularity == "weekly":
         offset = (date.weekday() + 1) % 7
         return date - _dt.timedelta(days=offset)
-    return date.replace(day=1)
+    if granularity == "monthly":
+        return date.replace(day=1)
+    return date
 
 
 def _align_end(date: _dt.date, granularity: str) -> _dt.date:
     if granularity == "weekly":
         return _align_start(date, granularity)
-    return date.replace(day=1)
+    if granularity == "monthly":
+        return date.replace(day=1)
+    return date
 
 
 def _period_expression(granularity: str) -> pl.Expr:
@@ -603,7 +607,9 @@ def _period_expression(granularity: str) -> pl.Expr:
         # This yields a Sunday-aligned week start that matches _align_start.
         offset = metric_date.dt.weekday().mod(7) * pl.duration(days=1)
         return (metric_date - offset).alias("__period_start")
-    return metric_date.dt.truncate("1mo").alias("__period_start")
+    if granularity == "monthly":
+        return metric_date.dt.truncate("1mo").alias("__period_start")
+    return metric_date.alias("__period_start")
 
 
 def _prepare_dates(lf: pl.LazyFrame) -> pl.LazyFrame:

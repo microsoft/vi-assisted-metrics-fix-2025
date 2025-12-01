@@ -84,7 +84,7 @@ The toolkit exposes the same options through both the Python script and the Powe
 | --- | --- | --- | --- |
 | Override reference window | `-SourceStart`, `-SourceEnd` | `--source-start`, `--source-end` | `2025-07-27 to 2025-08-30` |
 | Override corrected window | `-TargetStart`, `-TargetEnd` | `--target-start`, `--target-end` | `2025-08-31 to 2025-11-01` |
-| Switch granularity (weekly/monthly) | `-Granularity weekly` or `-Granularity monthly` | `--granularity weekly` or `--granularity monthly` | `weekly` |
+| Switch granularity (weekly/monthly/daily) | `-Granularity weekly`, `-Granularity monthly`, or `-Granularity daily` | `--granularity weekly`, `--granularity monthly`, or `--granularity daily` | `weekly` |
 | Quiet mode (suppress summary output) | `-Quiet` | `--quiet` | Off (shows progress) |
 | Auto-continue when metrics missing | `-AcceptPartial` | `--accept-partial` | Off (requires full metric set) |
 | Validation tolerance override | *(Use `-Tolerance` with `-Test`)* | `--tolerance 0.000001` | `0.000001` |
