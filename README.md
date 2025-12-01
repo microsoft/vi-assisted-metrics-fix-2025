@@ -1,6 +1,6 @@
 # Microsoft 365 Copilot Viva Insights Assisted Metrics Fix Toolkit
 
-Restore accurate Microsoft 365 Copilot assisted and meeting-hours metrics in Viva Insights exports with an automated Python/PowerShell toolkit that implements [Microsoft's Viva Insights assisted metrics fix (2025)](https://learn.microsoft.com/en-us/viva/insights/org-team-insights/alternate-calculation-total-meeting-hours-summarized-recapped). The tool expects your input CSV to contain **August 2025 activity** (reference window) and **September–October 2025 activity** (target window) so it can apply the official multiplier correctly.
+Restore accurate Microsoft 365 Copilot assisted and meeting-hours metrics in Viva Insights exports with an automated Python/PowerShell toolkit that implements [Microsoft's Viva Insights assisted metrics fix (2025)](https://learn.microsoft.com/en-us/viva/insights/org-team-insights/alternate-calculation-total-meeting-hours-summarized-recapped). By default the tool uses **August 2025 activity** as the reference window and **September–October 2025 activity** as the target window, but you can override either range—including choosing a reference period that overlaps or follows the target window—if your dataset requires it.
 
 ## Download
 
@@ -97,6 +97,7 @@ Notes:
 - When running the fix without **-Test/--test**, the script automatically validates the new CSV against the original and prints the full validation report in the summary (respecting **--tolerance**). Use **-Test/--test** when you need validation-only runs.
 - When running the fix, **--output/-Output** is optional; the default output is `<input>_corrected_YYYYMMDD_HHMMSS.csv`. A log is always written alongside the corrected file, reusing the same path/name stem with a `.log` extension.
 - The PowerShell launcher automatically locates or installs Python (using `winget`) and forwards the appropriate switches to the Python script.
+- Reference window overrides (`--source-start/--source-end` or `-SourceStart/-SourceEnd`) can point to any period present in your export—even if it overlaps with or follows the target window—allowing you to experiment with alternative baselines while keeping the rest of the workflow unchanged.
 
 </details>
 
