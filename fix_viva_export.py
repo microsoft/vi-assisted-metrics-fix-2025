@@ -50,6 +50,11 @@ import sys
 from pathlib import Path
 from typing import Iterable, Optional
 
+try:
+    import colorama
+except ImportError:  # pragma: no cover - optional dependency
+    colorama = None
+
 _ANSI_RESET = "\x1b[0m"
 _COLOR_INFO = "\x1b[36m"  # cyan
 _COLOR_HIGHLIGHT = "\x1b[33m"  # yellow
@@ -58,6 +63,17 @@ _COLOR_SUCCESS = "\x1b[32m"
 _COLOR_ERROR = "\x1b[31m"
 
 _ANSI_PATTERN = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _configure_console_colors() -> None:
+    if os.name == "nt" and colorama is not None:
+        try:
+            colorama.just_fix_windows_console()
+        except Exception:
+            pass
+
+
+_configure_console_colors()
 
 
 def _strip_ansi(text: str) -> str:
