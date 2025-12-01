@@ -44,6 +44,9 @@ Path to the unmodified Viva Insights export when using -Test.
 .PARAMETER Corrected
 Path to the corrected Viva Insights export when using -Test.
 
+.PARAMETER Tolerance
+Maximum allowed delta for validation comparisons. Default: 1e-6.
+
 .PARAMETER Help
 Displays usage details identical to the Python script and exits.
 
@@ -94,6 +97,9 @@ param(
     [Parameter(ParameterSetName = 'Run')]
     [string]$Corrected,
 
+    [Parameter(ParameterSetName = 'Run')]
+    [double]$Tolerance = 1e-6,
+
     [Parameter(Mandatory = $true, ParameterSetName = 'Help')]
     [switch]$Help,
 
@@ -119,23 +125,27 @@ Defaults:
   Hourly rate    : 72 USD (used to recompute Copilot assisted value)
 
 Options:
-    --granularity {weekly,monthly}
-    --source-start YYYY-MM-DD
-    --source-end   YYYY-MM-DD
-    --target-start YYYY-MM-DD
-    --target-end   YYYY-MM-DD
+  --granularity {weekly,monthly}
+  --source-start YYYY-MM-DD
+  --source-end   YYYY-MM-DD
+  --target-start YYYY-MM-DD
+  --target-end   YYYY-MM-DD
     --rate FLOAT
     --overwrite
     --quiet
     --accept-partial
+    --test (requires --original, --corrected)
+    --original PATH
+    --corrected PATH
+    --tolerance FLOAT
     --help
 
 Important:
-  “Copilot assisted hours” remains an estimate, because Microsoft’s official
-  workaround extrapolates meeting hours from the August 2025 reference window
-  (or whichever range you specify via --source-start/--source-end). All
-  non-impacted rows and columns flow through unchanged. Columns are never
-  renamed, removed, or reordered.
+    "Copilot assisted hours" remains an estimate, because Microsoft's official
+    workaround extrapolates meeting hours from the August 2025 reference window
+    (or whichever window you override via --source-start/--source-end). All
+    non-impacted rows and columns flow through unchanged. Columns are never
+    renamed, removed, or reordered.
 "@
 
 if ($PSCmdlet.ParameterSetName -eq 'Help') {
@@ -274,6 +284,8 @@ if ($Test) {
         $resolvedCorrected = $Corrected
     }
 
+    $toleranceString = $Tolerance.ToString([System.Globalization.CultureInfo]::InvariantCulture)
+
     $arguments += @(
         '--test',
         '--original', $resolvedOriginal,
@@ -282,7 +294,8 @@ if ($Test) {
         '--source-start', $SourceStart,
         '--source-end', $SourceEnd,
         '--target-start', $TargetStart,
-        '--target-end', $TargetEnd
+        '--target-end', $TargetEnd,
+        '--tolerance', $toleranceString
     )
 
     if ($Quiet) {
@@ -291,6 +304,7 @@ if ($Test) {
 } else {
     $resolvedInput = (Resolve-Path -LiteralPath $InputPath).Path
     $rateString = $Rate.ToString([System.Globalization.CultureInfo]::InvariantCulture)
+    $toleranceString = $Tolerance.ToString([System.Globalization.CultureInfo]::InvariantCulture)
 
     $arguments += @(
         '--input', $resolvedInput,
@@ -299,7 +313,8 @@ if ($Test) {
         '--source-end', $SourceEnd,
         '--target-start', $TargetStart,
         '--target-end', $TargetEnd,
-        '--rate', $rateString
+        '--rate', $rateString,
+        '--tolerance', $toleranceString
     )
 
     if ($PSBoundParameters.ContainsKey('Output') -and $Output) {
