@@ -457,6 +457,7 @@ def _run_validation_mode(args: argparse.Namespace, logger: RunLogger) -> None:
     corrected_path = Path(args.corrected).resolve()
 
     tolerance = args.tolerance if args.tolerance is not None else DEFAULT_VALIDATION_TOLERANCE
+    granularity = args.granularity or DEFAULT_GRANULARITY
 
     source_start = _to_date(args.source_start or DEFAULT_SOURCE_START)
     source_end = _to_date(args.source_end or DEFAULT_SOURCE_END)
@@ -471,12 +472,37 @@ def _run_validation_mode(args: argparse.Namespace, logger: RunLogger) -> None:
             source_end=source_end,
             target_start=target_start,
             target_end=target_end,
-            granularity=args.granularity or DEFAULT_GRANULARITY,
+            granularity=granularity,
             tolerance=tolerance,
         )
     except ValidationError as exc:
         logger.error(f"{_COLOR_ERROR}{exc}{_ANSI_RESET}")
         raise
+
+    separator = f"{_COLOR_INFO}{'=' * 60}{_ANSI_RESET}"
+    logger.info(separator)
+    logger.info("Summary", color=_COLOR_HIGHLIGHT)
+    logger.info(f"{_COLOR_INFO}Validation-only:{_ANSI_RESET} {_COLOR_HIGHLIGHT}True{_ANSI_RESET}")
+    logger.info(
+        f"{_COLOR_INFO}Granularity:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{granularity}{_ANSI_RESET}"
+    )
+    logger.info(
+        f"{_COLOR_INFO}Source window:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{source_start.isoformat()} → {source_end.isoformat()}{_ANSI_RESET}"
+    )
+    logger.info(
+        f"{_COLOR_INFO}Target window:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{target_start.isoformat()} → {target_end.isoformat()}{_ANSI_RESET}"
+    )
+    logger.info(
+        f"{_COLOR_INFO}Validation tolerance:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{tolerance:.6g}{_ANSI_RESET}"
+    )
+    logger.info(f"{_COLOR_INFO}Accept partial metrics:{_ANSI_RESET} {_COLOR_HIGHLIGHT}False{_ANSI_RESET}")
+    logger.info(f"{_COLOR_INFO}Overwrite existing output:{_ANSI_RESET} {_COLOR_HIGHLIGHT}False{_ANSI_RESET}")
+    logger.info(
+        f"{_COLOR_INFO}Original file:{_ANSI_RESET} {_COLOR_PATH}{original_path.as_posix()}{_ANSI_RESET}"
+    )
+    logger.info(
+        f"{_COLOR_INFO}Corrected file:{_ANSI_RESET} {_COLOR_PATH}{corrected_path.as_posix()}{_ANSI_RESET}"
+    )
 
     _log_validation_report(
         logger=logger,
@@ -1005,7 +1031,25 @@ def main(argv: Iterable[str] | None = None) -> None:
         logger.info(separator)
         logger.info("Summary", color=_COLOR_HIGHLIGHT)
         logger.info(
+            f"{_COLOR_INFO}Validation-only:{_ANSI_RESET} {_COLOR_HIGHLIGHT}False{_ANSI_RESET}"
+        )
+        logger.info(
             f"{_COLOR_INFO}Granularity:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{args.granularity}{_ANSI_RESET}"
+        )
+        logger.info(
+            f"{_COLOR_INFO}Source window:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{source_start.isoformat()} → {source_end.isoformat()}{_ANSI_RESET}"
+        )
+        logger.info(
+            f"{_COLOR_INFO}Target window:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{target_start.isoformat()} → {target_end.isoformat()}{_ANSI_RESET}"
+        )
+        logger.info(
+            f"{_COLOR_INFO}Validation tolerance:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{validation_tolerance:.6g}{_ANSI_RESET}"
+        )
+        logger.info(
+            f"{_COLOR_INFO}Accept partial metrics:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{'True' if args.accept_partial else 'False'}{_ANSI_RESET}"
+        )
+        logger.info(
+            f"{_COLOR_INFO}Overwrite existing output:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{'True' if args.overwrite else 'False'}{_ANSI_RESET}"
         )
         logger.info(f"{_COLOR_INFO}Multiplier applied:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{multiplier:.6f}{_ANSI_RESET}")
         logger.info(
@@ -1018,13 +1062,13 @@ def main(argv: Iterable[str] | None = None) -> None:
             f"{_COLOR_INFO}Metrics skipped:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{', '.join(skipped_metrics) if skipped_metrics else 'None'}{_ANSI_RESET}"
         )
         logger.info(
-            f"{_COLOR_INFO}Source range rows ({source_start.isoformat()} to {source_end.isoformat()}):{_ANSI_RESET} {_COLOR_HIGHLIGHT}{source_row_total}{_ANSI_RESET}"
+            f"{_COLOR_INFO}Source rows:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{source_row_total}{_ANSI_RESET}"
         )
         logger.info(
-            f"{_COLOR_INFO}Target range rows ({target_start.isoformat()} to {target_end.isoformat()}):{_ANSI_RESET} {_COLOR_HIGHLIGHT}{target_row_total}{_ANSI_RESET}"
+            f"{_COLOR_INFO}Target rows:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{target_row_total}{_ANSI_RESET}"
         )
         logger.info(
-            f"{_COLOR_INFO}Rows updated ({target_start.isoformat()} to {target_end.isoformat()}):{_ANSI_RESET} {_COLOR_HIGHLIGHT}{rows_updated}{_ANSI_RESET}"
+            f"{_COLOR_INFO}Rows updated:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{rows_updated}{_ANSI_RESET}"
         )
         logger.info(f"{_COLOR_INFO}Input file:{_ANSI_RESET} {_COLOR_PATH}{input_path.as_posix()}{_ANSI_RESET}")
         logger.info(f"{_COLOR_INFO}Log file:{_ANSI_RESET} {_COLOR_PATH}{log_path.as_posix()}{_ANSI_RESET}")
