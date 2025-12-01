@@ -1004,6 +1004,9 @@ def main(argv: Iterable[str] | None = None) -> None:
         separator = f"{_COLOR_INFO}{'=' * 60}{_ANSI_RESET}"
         logger.info(separator)
         logger.info("Summary", color=_COLOR_HIGHLIGHT)
+        logger.info(
+            f"{_COLOR_INFO}Granularity:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{args.granularity}{_ANSI_RESET}"
+        )
         logger.info(f"{_COLOR_INFO}Multiplier applied:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{multiplier:.6f}{_ANSI_RESET}")
         logger.info(
             f"{_COLOR_INFO}Processed metrics:{_ANSI_RESET} {_COLOR_HIGHLIGHT}{', '.join(updated_metric_names) if updated_metric_names else 'None'}{_ANSI_RESET}"
